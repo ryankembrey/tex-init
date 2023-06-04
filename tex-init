@@ -1,12 +1,12 @@
 #!/bin/bash
 
-template_dir="/home/ryan/templates/latex/tex"
+template_dir="$HOME/templates/latex/tex"
 
 templates=($(ls -1 "$template_dir"))
 
 #!/bin/bash
 
-template_dir="/home/ryan/templates/latex/tex"
+template_dir="$HOME/templates/latex/tex"
 
 templates=($(ls -1 "$template_dir"))
 
