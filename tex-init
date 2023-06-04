@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 template_dir="$HOME/templates/latex/tex"
 
