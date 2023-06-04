@@ -4,12 +4,6 @@ template_dir="$HOME/templates/latex/tex"
 
 templates=($(ls -1 "$template_dir"))
 
-#!/bin/bash
-
-template_dir="$HOME/templates/latex/tex"
-
-templates=($(ls -1 "$template_dir"))
-
 echo "Available LaTeX templates:"
 for i in "${!templates[@]}"; do
     echo "$(($i+1)). ${templates[$i]}"
