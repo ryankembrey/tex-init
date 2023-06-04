@@ -1,0 +1,60 @@
+#!/bin/bash
+
+template_dir="/home/ryan/templates/latex/tex"
+
+templates=($(ls -1 "$template_dir"))
+
+#!/bin/bash
+
+template_dir="/home/ryan/templates/latex/tex"
+
+templates=($(ls -1 "$template_dir"))
+
+echo "Available LaTeX templates:"
+for i in "${!templates[@]}"; do
+    echo "$(($i+1)). ${templates[$i]}"
+done
+
+read -p "Enter the template number: " template_number
+
+if ! [[ "$template_number" =~ ^[0-9]+$ ]]; then
+    echo "Invalid template number. Exiting."
+    exit 1
+fi
+
+index=$(($template_number - 1))
+
+if ! ((index >= 0 && index < ${#templates[@]})); then
+    echo "Invalid template number. Exiting."
+    exit 1
+fi
+
+template_name="${templates[$index]}"
+
+template_path="$template_dir/$template_name"
+
+read -p "Enter the name of the .tex file: " tex_file_name
+
+mkdir -p "$tex_file_name/sections" "$tex_file_name/figures"
+
+touch "$tex_file_name/$tex_file_name.tex"
+
+cat "$template_path" >> "$tex_file_name/$tex_file_name.tex"
+
+echo -e "\nYour project based on the '$template_name' template is in ./$tex_file_name/$tex_file_name.tex"
+
+if [[ "$1" == "-o" ]]; then
+    cd "$tex_file_name"
+    nvim "./$tex_file_name.tex"
+fi
+
+if [[ "$1" == "-op" ]]; then
+    cd "$tex_file_name"
+    pdflatex "./$tex_file_name.tex"
+    sleep 0.5
+    zathura "./$tex_file_name.pdf" &
+    disown
+    nvim "./$tex_file_name.tex"
+fi
+
+
