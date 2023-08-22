@@ -1,0 +1,34 @@
+\documentclass{beamer}
+
+\title{Title}
+\author{Author}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Introduction}
+% Add your content here
+\end{frame}
+
+\begin{frame}
+\frametitle{Methodology}
+% Add your content here
+\end{frame}
+
+\begin{frame}
+\frametitle{Results}
+% Add your content here
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusion}
+% Add your content here
+\end{frame}
+
+\end{document}
+
