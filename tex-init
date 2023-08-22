@@ -31,7 +31,6 @@ read -p "Enter the name of the .tex file: " tex_file_name
 
 mkdir -p "$tex_file_name/sections" "$tex_file_name/figures"
 
-
 cp ~/templates/latex/tex/$template_name ./$tex_file_name/$tex_file_name.tex
 
 cp ~/templates/latex/sections/preamble.tex "./$tex_file_name/sections/preamble.tex"
@@ -39,6 +38,9 @@ cp ~/templates/latex/sections/preamble.tex "./$tex_file_name/sections/preamble.t
 cp ~/templates/latex/figures/uts_logo.png "./$tex_file_name/figures/uts_logo.png"
 
 cp ~/templates/latex/sections/titlepage.tex "./$tex_file_name/sections/titlepage.tex"
+
+mkdir ./$tex_file_name/bib
+touch ./$tex_file_name/bib/bibliography.bib
 
 echo -e "\nYour project based on the '$template_name' template is in ./$tex_file_name/$tex_file_name.tex"
 
@@ -50,12 +52,12 @@ fi
 if [[ "$1" == "-op" ]]; then
     cd "$tex_file_name"
     pdflatex -shell-escape "./$tex_file_name.tex"
-    sleep 0.2
+    sleep 0.1
+    bibtex ./$tex_file_name.aux
+    sleep 0.1
     pdflatex -shell-escape "./$tex_file_name.tex"
     sleep 0.5
     zathura "./$tex_file_name.pdf" &
     disown
     nvim "./$tex_file_name.tex"
 fi
-
-
