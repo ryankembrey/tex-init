@@ -36,26 +36,54 @@ cp ~/templates/latex/tex/$template_name ./$tex_file_name/$tex_file_name.tex
 cp ~/templates/latex/sections/preamble.tex "./$tex_file_name/sections/preamble.tex"
 
 cp ~/templates/latex/figures/uts_logo.png "./$tex_file_name/figures/uts_logo.png"
+cp ~/templates/latex/figures/title_image.png "./$tex_file_name/figures/title_image.png"
 
 cp ~/templates/latex/sections/titlepage.tex "./$tex_file_name/sections/titlepage.tex"
 
 mkdir ./$tex_file_name/bib
 touch ./$tex_file_name/bib/bibliography.bib
 
-echo -e "\nYour project based on the '$template_name' template is in ./$tex_file_name/$tex_file_name.tex"
+
+
+
+
+if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
+    read -p "Would you like to provide additional options for the titlepage? (Y/n): " additional_options
+    additional_options=${additional_options:-Y}  
+
+    if [[ $additional_options == "y" || $additional_options == "Y" ]]; then
+        read -p "Name the titlepage: " titlepage_name
+        indented_titlepage_name=$(printf '\t\t\t%s' "$titlepage_name")
+        sed -i "8s/.*/$indented_titlepage_name/" "./$tex_file_name/sections/titlepage.tex"
+
+        read -p "What class is it for: " class_name
+        indented_class_name=$(printf '\t\t\t%s' "$class_name")
+        sed -i "30s/.*/$indented_class_name/" "./$tex_file_name/sections/titlepage.tex"
+        
+        read -p "Describe the project: " project_name
+        indented_project_name=$(printf '\t\t\t%s' "$project_name")
+        sed -i "28s/.*/$indented_project_name/" "./$tex_file_name/sections/titlepage.tex"
+    fi
+fi
+
+
 
 if [[ "$1" == "-o" ]]; then
     cd "$tex_file_name"
     nvim "./$tex_file_name.tex"
 fi
 
+
+
 if [[ "$1" == "-op" ]]; then
     cd "$tex_file_name"
-    pdflatex -shell-escape "./$tex_file_name.tex"
-    sleep 0.1
-    bibtex ./$tex_file_name.aux
-    sleep 0.1
-    pdflatex -shell-escape "./$tex_file_name.tex"
+
+    echo -e "\nGenerating your $template_name..."
+
+    pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
+    bibtex ./$tex_file_name.aux > /dev/null
+    pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
+
     sleep 0.5
     zathura "./$tex_file_name.pdf" &
     disown
