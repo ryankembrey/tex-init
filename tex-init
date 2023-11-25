@@ -54,8 +54,11 @@ if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
     if [[ $additional_options == "y" || $additional_options == "Y" ]]; then
         read -p "Name the titlepage: " titlepage_name
         indented_titlepage_name=$(printf '\t\t\t%s' "$titlepage_name")
-        sed -i "8s/.*/$indented_titlepage_name/" "./$tex_file_name/sections/titlepage.tex"
-
+        sed -i "8s/.*/$indented_titlepage_name/" "./$tex_file_name/sections/titlepage.tex" 
+        
+        header_name="   \\\\lhead{$titlepage_name}"
+        sed -i "59s|.*|$header_name|" "./$tex_file_name/sections/preamble.tex"
+            
         read -p "What class is it for: " class_name
         indented_class_name=$(printf '\t\t\t%s' "$class_name")
         sed -i "30s/.*/$indented_class_name/" "./$tex_file_name/sections/titlepage.tex"
@@ -89,3 +92,7 @@ if [[ "$1" == "-op" ]]; then
     disown
     nvim "./$tex_file_name.tex"
 fi
+
+
+
+
