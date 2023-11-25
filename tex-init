@@ -92,7 +92,3 @@ if [[ "$1" == "-op" ]]; then
     disown
     nvim "./$tex_file_name.tex"
 fi
-
-
-
-
