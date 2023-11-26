@@ -43,10 +43,6 @@ cp ~/templates/latex/sections/titlepage.tex "./$tex_file_name/sections/titlepage
 mkdir ./$tex_file_name/bib
 touch ./$tex_file_name/bib/bibliography.bib
 
-
-
-
-
 if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
     read -p "Would you like to provide additional options for the titlepage? (Y/n): " additional_options
     additional_options=${additional_options:-Y}  
@@ -69,14 +65,10 @@ if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
     fi
 fi
 
-
-
 if [[ "$1" == "-o" ]]; then
     cd "$tex_file_name"
-    nvim "./$tex_file_name.tex"
+    $EDITOR "./$tex_file_name.tex"
 fi
-
-
 
 if [[ "$1" == "-op" ]]; then
     cd "$tex_file_name"
@@ -90,5 +82,5 @@ if [[ "$1" == "-op" ]]; then
     sleep 0.5
     zathura "./$tex_file_name.pdf" &
     disown
-    nvim "./$tex_file_name.tex"
+    $EDITOR "./$tex_file_name.tex"
 fi
