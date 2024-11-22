@@ -5,6 +5,7 @@
 \usepackage{apacite}
 
 \begin{document}
+%coversheet
 
 \include{sections/titlepage}
 \tableofcontents \label{toc}
@@ -15,5 +16,10 @@
 \chapter{}
 
 
+\newpage
+
+\bibliographystyle{apacite}
+\bibliography{./bib/bibliography.bib}
+\label{bibliography}
 
 \end{document}

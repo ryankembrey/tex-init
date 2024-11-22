@@ -5,12 +5,19 @@
 \usepackage{apacite}
 
 \begin{document}
+%coversheet
 
 \include{sections/titlepage}
 \tableofcontents \label{toc}
 \listoffigures
 \newpage
 
-\section{}
+\section{Introduction}
+
+\newpage
+
+\bibliographystyle{apacite}
+\bibliography{./bib/bibliography.bib}
+\label{bibliography}
 
 \end{document}
