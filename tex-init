@@ -29,25 +29,21 @@ template_path="$template_dir/$template_name"
 
 read -p "Enter the name of the .tex file: " tex_file_name
 
-mkdir -p "$tex_file_name/sections" "$tex_file_name/figures"
+mkdir -p "$tex_file_name/sections" "$tex_file_name/figures" "$tex_file_name/bib"
 
 cp ~/templates/latex/tex/$template_name ./$tex_file_name/$tex_file_name.tex
-
 cp ~/templates/latex/sections/preamble.tex "./$tex_file_name/sections/preamble.tex"
-
-cp ~/templates/latex/figures/uts_logo.png "./$tex_file_name/figures/uts_logo.png"
+cp ~/templates/latex/figures/uts_logo.png "./$tex_file_name/figures/logo.png"
 cp ~/templates/latex/figures/title_image.png "./$tex_file_name/figures/title_image.png"
-
 cp ~/templates/latex/sections/titlepage.tex "./$tex_file_name/sections/titlepage.tex"
 
-mkdir ./$tex_file_name/bib
 touch ./$tex_file_name/bib/bibliography.bib
 
 if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
-    read -p "Would you like to provide additional options for the titlepage? (Y/n): " additional_options
-    additional_options=${additional_options:-Y}  
+    read -p "Add a titlepage? (Y/n): " add_titlepage
+    add_titlepage=${add_titlepage:-Y}  
 
-    if [[ $additional_options == "y" || $additional_options == "Y" ]]; then
+    if [[ $add_titlepage == "y" || $add_titlepage == "Y" ]]; then
         read -p "Name the titlepage: " titlepage_name
         indented_titlepage_name=$(printf '\t\t\t%s' "$titlepage_name")
         sed -i "8s/.*/$indented_titlepage_name/" "./$tex_file_name/sections/titlepage.tex" 
@@ -65,22 +61,67 @@ if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
     fi
 fi
 
-if [[ "$1" == "-o" ]]; then
-    cd "$tex_file_name"
-    $EDITOR "./$tex_file_name.tex"
+if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
+    read -p "Add a coversheet? (Y/n): " add_coversheet
+    add_coversheet=${add_coversheet:-Y}  
+
+    if [[ $add_coversheet == "y" || $add_coversheet == "Y" ]]; then
+
+        coversheet_filename="./$tex_file_name/coversheet/uts_coversheet.tex"
+        cp -r ~/.local/bin/tex-init/coversheet/ ./$tex_file_name/
+
+        surname=$(sed -n '1p' ~/.local/bin/tex-init/coversheet.config)
+        first_name=$(sed -n '2p' ~/.local/bin/tex-init/coversheet.config)
+        email_address=$(sed -n '3p' ~/.local/bin/tex-init/coversheet.config)
+        student_id=$(sed -n '4p' ~/.local/bin/tex-init/coversheet.config)
+        data_entry_1="$ & $surname \\hspace{15pt} $first_name & $student_id \\\\"
+        escaped_data_entry_1=$(echo "$data_entry_1" | sed 's/[&/\]/\\&/g')
+
+        sed -i "31s/.*/$escaped_data_entry_1/" "$coversheet_filename" 
+        sed -i "39s/.*/$email_address/" "$coversheet_filename" 
+
+        read -p "Fill in non-personal details? (Y/n): " add_details
+
+        add_details=${add_details:-Y}  
+        if [[ $add_details == "y" || $add_details == "Y" ]]; then
+            read -p "Enter class number and name: " class_name
+            data_entry_1="$class_name & $surname \\hspace{15pt} $first_name & $student_id \\\\"
+            escaped_data_entry_1=$(echo "$data_entry_1" | sed 's/[&/\]/\\&/g')
+
+            sed -i "31s/.*/$escaped_data_entry_1/" "$coversheet_filename" 
+
+            read -p "Enter tutor name: " tutor_name
+            sed -i "53s/.*/$tutor_name/" "$coversheet_filename" 
+
+            read -p "Enter tutorial group: " tutorial_group
+            sed -i "57s/.*/$tutorial_group/" "$coversheet_filename"
+
+            read -p "Enter due date: " due_date
+            sed -i "61s/.*/$due_date/" "$coversheet_filename" 
+
+
+            read -p "Enter assessment item number and title: " assessment_title
+            sed -i "70s/.*/$assessment_title/" "$coversheet_filename" 
+        fi
+
+        cd "./$tex_file_name/coversheet/" 
+        echo "Compiling coversheet..."
+        pdflatex -shell-escape "./uts_coversheet.tex" > /dev/null
+        cd ../..
+        add_coversheet_text="\\\includepdf[pages=-]{./coversheet/uts_coversheet.pdf}"
+        sed -i "8s|.*|$add_coversheet_text|" "./$tex_file_name/$tex_file_name.tex"
+    fi
 fi
 
-if [[ "$1" == "-op" ]]; then
-    cd "$tex_file_name"
+cd "$tex_file_name"
 
-    echo -e "\nGenerating your $template_name..."
+echo -e "\nGenerating your $template_name..."
 
-    pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
-    bibtex ./$tex_file_name.aux > /dev/null
-    pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
+pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
+bibtex ./$tex_file_name.aux > /dev/null
+pdflatex -shell-escape "./$tex_file_name.tex" > /dev/null
 
-    sleep 0.5
-    zathura "./$tex_file_name.pdf" &
-    disown
-    $EDITOR "./$tex_file_name.tex"
-fi
+sleep 0.5
+zathura "./$tex_file_name.pdf" &
+disown
+$EDITOR "./$tex_file_name.tex"
