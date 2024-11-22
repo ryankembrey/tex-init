@@ -67,7 +67,7 @@ if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
 
     if [[ $add_coversheet == "y" || $add_coversheet == "Y" ]]; then
 
-        coversheet_filename="./$tex_file_name/coversheet/uts_coversheet.tex"
+        coversheet_filename="./$tex_file_name/coversheet/coversheet.tex"
         cp -r ~/.local/bin/tex-init/coversheet/ ./$tex_file_name/
 
         surname=$(sed -n '1p' ~/.local/bin/tex-init/coversheet.config)
@@ -106,9 +106,9 @@ if [ "$template_name" == "report" ] || [ "$template_name" == "article" ]; then
 
         cd "./$tex_file_name/coversheet/" 
         echo "Compiling coversheet..."
-        pdflatex -shell-escape "./uts_coversheet.tex" > /dev/null
+        pdflatex -shell-escape "./coversheet.tex" > /dev/null
         cd ../..
-        add_coversheet_text="\\\includepdf[pages=-]{./coversheet/uts_coversheet.pdf}"
+        add_coversheet_text="\\\includepdf[pages=-]{./coversheet/coversheet.pdf}"
         sed -i "8s|.*|$add_coversheet_text|" "./$tex_file_name/$tex_file_name.tex"
     fi
 fi

@@ -22,17 +22,23 @@ Before using `tex-init`, make sure you have the following:
 6. The script will create the necessary directories and generate the main `.tex` file based on the selected template.
 7. You will see the project structure displayed in a tree-like format:
 ```bash
-.
-├── example_report
-│ ├── figures
-│ ├── sections
-│ └── example_report.tex
+└── example
+    ├── bib
+    │   └── bibliography.bib
+    ├── coversheet
+    │   ├── coversheet.pdf
+    │   ├── coversheet.tex
+    │   └── logo.png
+    ├── example.pdf
+    ├── example.tex
+    ├── figures
+    │   ├── logo.png
+    │   └── title_image.png
+    └── sections
+        ├── preamble.tex
+        └── titlepage.tex
 ```
 This represents the directory structure of your LaTeX project.
-
-## Options
-- `-o`: Automatically opens the generated `.tex` file in NeoVim once the project is created.
-- `-op`: Automatically opens the generated `.tex` file in NeoVim, compiles it to PDF using `pdflatex`, and opens the PDF in Zathura.
 
 ---
 Remember to customize your LaTeX templates in the `~/templates/latex/tex` directory to suit your needs.
